@@ -63,7 +63,21 @@ router.delete("/", function(req, res) {
 
 /* 할일 상태 수정 */
 router.put("/", function(req, res) {
-	res.send("respond with a resource");
+	console.log(req.query);
+	pool.getConnection(function(err, connection) {
+		if (err) {
+			res.status(500).send();
+			throw err;
+		}
+	
+		let sqlStr = `UPDATE ${TABLE_NAME} SET status=${req.body.status} WHERE id=${req.body.todoId};`;
+		console.log(sqlStr);
+		connection.query(sqlStr, function(error, results) {
+			connection.release();
+			if (error) throw error;
+			res.json(results);
+		});
+	});
 });
 
 module.exports = router;

@@ -44,8 +44,8 @@
         let html_list_todo = "";
         for (const todo of response.data) {
           html_list_todo += `
-            <li class="list-group-item">
-              <input type="checkbox">${todo.title}
+            <li class="list-group-item clearfix">
+              <input type="checkbox" ${ todo.status == 1 ? "checked" : ""} onClick="updateTodoStatus(${todo.id}, this)">${todo.title}
             <span class="right">
               <button type="button" onClick="deleteTodo(${todo.id})" class="btn btn-danger btn-sm">삭제</button>
             </span>
@@ -64,6 +64,12 @@
         const response = await axios.delete("todos", { params });
         console.log(response);
         await getTodoList();
+      }
+
+      const updateTodoStatus = async (todoId, obj) => {
+        const status = obj.checked ? 1 : 0;
+        const response = await axios.put("todos", { todoId, status });
+        console.log(response);
       }
 
       window.onload = () => {
